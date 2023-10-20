@@ -79,6 +79,9 @@ class Ui_Student_Form(object):
         Student_Form.setStatusBar(self.statusbar)
 
         self.retranslateUi(Student_Form)
+        self.pushButton.clicked.connect(Student_Form.stu1) # type: ignore
+        self.pushButton_2.clicked.connect(Student_Form.stu2) # type: ignore
+        self.pushButton_3.clicked.connect(Student_Form.back) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Student_Form)
 
     def retranslateUi(self, Student_Form):

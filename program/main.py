@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 import sys
-from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form
+from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form ,Stu_Inquiry_Form
 
 
 # 登录界面
@@ -34,9 +34,24 @@ class My_Student_Form(QMainWindow, Student_Form.Ui_Student_Form):
         super(My_Student_Form, self).__init__(parent)
         self.setupUi(self)
 
-    # 教师界面
+    def stu1(self):
+        controller.show_stu_stu1()
 
+    def stu2(self):
+        pass
 
+    def back(self):
+        controller.show_student_login()
+
+class My_Stu_Inquiry_Form(QMainWindow,Stu_Inquiry_Form.Ui_Stu_Inquiry_Form):
+    def __init__(self,parent=None):
+        super(My_Stu_Inquiry_Form,self).__init__(parent)
+        self.setupUi(self)
+
+    def back(self):
+        controller.show_stu1_stu()
+
+# 教师界面
 class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
     def __init__(self, parent=None):
         super(My_Teacher_Form, self).__init__(parent)
@@ -62,10 +77,12 @@ class Controller:
         self.login = My_Login_Form()
         self.student = My_Student_Form()
         self.teacher = My_Teacher_Form()
+        self.register = My_Register_Form()
+        self.stu_inquiry=My_Stu_Inquiry_Form()
         self.login.hide()
         self.student.hide()
         self.teacher.hide()
-        self.register = My_Register_Form()
+        self.stu_inquiry.hide()
         self.login.hide()
         self.register.hide()
 
@@ -96,6 +113,13 @@ class Controller:
         self.login.show()
         self.student.close()
 
+    def show_stu1_stu(self):
+        self.student.show()
+        self.stu_inquiry.close()
+
+    def show_stu_stu1(self):
+        self.stu_inquiry.show()
+        self.student.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)  # 在 QApplication 方法中使用，创建应用程序对象

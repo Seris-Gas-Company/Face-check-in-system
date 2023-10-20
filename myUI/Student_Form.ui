@@ -109,5 +109,59 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Student_Form</receiver>
+   <slot>stu1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>208</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>341</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Student_Form</receiver>
+   <slot>stu2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>Student_Form</receiver>
+   <slot>back()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>377</x>
+     <y>235</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>stu1()</slot>
+  <slot>stu2()</slot>
+  <slot>back()</slot>
+ </slots>
 </ui>
