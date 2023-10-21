@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Teacher_Form(object):
     def setupUi(self, Teacher_Form):
         Teacher_Form.setObjectName("Teacher_Form")
-        Teacher_Form.resize(416, 275)
+        Teacher_Form.resize(429, 308)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -46,12 +46,15 @@ class Ui_Teacher_Form(object):
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_4.setObjectName("pushButton_4")
         self.verticalLayout.addWidget(self.pushButton_4)
+        self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.verticalLayout.addWidget(self.pushButton_6)
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_5.setObjectName("pushButton_5")
         self.verticalLayout.addWidget(self.pushButton_5)
         Teacher_Form.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Teacher_Form)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 416, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 429, 22))
         self.menubar.setObjectName("menubar")
         Teacher_Form.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(Teacher_Form)
@@ -59,6 +62,12 @@ class Ui_Teacher_Form(object):
         Teacher_Form.setStatusBar(self.statusbar)
 
         self.retranslateUi(Teacher_Form)
+        self.pushButton_6.clicked.connect(Teacher_Form.teacher5) # type: ignore
+        self.pushButton_5.clicked.connect(Teacher_Form.back) # type: ignore
+        self.pushButton_4.clicked.connect(Teacher_Form.teacher4) # type: ignore
+        self.pushButton_3.clicked.connect(Teacher_Form.teacher3) # type: ignore
+        self.pushButton_2.clicked.connect(Teacher_Form.teacher2) # type: ignore
+        self.pushButton.clicked.connect(Teacher_Form.teacher1) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Teacher_Form)
 
     def retranslateUi(self, Teacher_Form):
@@ -69,4 +78,5 @@ class Ui_Teacher_Form(object):
         self.pushButton_2.setText(_translate("Teacher_Form", "照片签到"))
         self.pushButton_3.setText(_translate("Teacher_Form", "点名签到"))
         self.pushButton_4.setText(_translate("Teacher_Form", "签到查询"))
+        self.pushButton_6.setText(_translate("Teacher_Form", "个人信息"))
         self.pushButton_5.setText(_translate("Teacher_Form", "退出"))

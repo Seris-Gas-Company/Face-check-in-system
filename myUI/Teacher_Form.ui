@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>275</height>
+    <width>429</width>
+    <height>308</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -69,6 +69,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="pushButton_6">
+      <property name="text">
+       <string>个人信息</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="pushButton_5">
       <property name="text">
        <string>退出</string>
@@ -82,7 +89,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>416</width>
+     <width>429</width>
      <height>22</height>
     </rect>
    </property>
@@ -90,5 +97,110 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_6</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>teacher5()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>134</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>back()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>teacher4()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>220</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>192</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>teacher3()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>teacher2()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>359</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>122</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Teacher_Form</receiver>
+   <slot>teacher1()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>90</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>back()</slot>
+  <slot>teacher1()</slot>
+  <slot>teacher2()</slot>
+  <slot>teacher3()</slot>
+  <slot>teacher4()</slot>
+  <slot>teacher5()</slot>
+ </slots>
 </ui>

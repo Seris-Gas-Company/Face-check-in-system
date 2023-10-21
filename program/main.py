@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 import sys
-from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form ,Stu_Inquiry_Form
+from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form, Stu_Inquiry_Form, Stu_Info_Form
+from myUI import Tch_Info_Form, Checkin_Form
 
 
 # 登录界面
@@ -38,18 +39,34 @@ class My_Student_Form(QMainWindow, Student_Form.Ui_Student_Form):
         controller.show_stu_stu1()
 
     def stu2(self):
-        pass
+        controller.show_stu_stu2()
 
     def back(self):
         controller.show_student_login()
 
-class My_Stu_Inquiry_Form(QMainWindow,Stu_Inquiry_Form.Ui_Stu_Inquiry_Form):
-    def __init__(self,parent=None):
-        super(My_Stu_Inquiry_Form,self).__init__(parent)
+
+# 学生查询界面
+class My_Stu_Inquiry_Form(QMainWindow, Stu_Inquiry_Form.Ui_Stu_Inquiry_Form):
+    def __init__(self, parent=None):
+        super(My_Stu_Inquiry_Form, self).__init__(parent)
         self.setupUi(self)
 
     def back(self):
         controller.show_stu1_stu()
+
+
+# 学生个人信息界面
+class My_Stu_Info_Form(QMainWindow, Stu_Info_Form.Ui_Stu_Info_Form):
+    def __init__(self, parent=None):
+        super(My_Stu_Info_Form, self).__init__(parent)
+        self.setupUi(self)
+
+    def back(self):
+        controller.show_stu2_stu()
+
+    def save(self):
+        print("save")
+
 
 # 教师界面
 class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
@@ -57,7 +74,54 @@ class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
         super(My_Teacher_Form, self).__init__(parent)
         self.setupUi(self)
 
+    def teacher1(self):
+        pass
 
+    def teacher2(self):
+        pass
+
+    def teacher3(self):
+        pass
+
+    def teacher4(self):
+        pass
+
+    def teacher5(self):
+        pass
+
+    def back(self):
+        controller.show_teacher_login()
+
+
+# 教师信息
+class My_Tch_Info_Form(QMainWindow, Tch_Info_Form.Ui_Tch_Info_Form):
+    def __init__(self, parent=None):
+        super(My_Tch_Info_Form, self).__init__(parent)
+        self.setupUi(self)
+
+    def save(self):
+        print("save")
+
+    def back(self):
+        controller.show_tch1_tch()
+
+
+# 教师查询
+class My_Tch_Checkin_Form(QMainWindow, Checkin_Form.Ui_Checkin_Form):
+    def __init__(self, parent=None):
+        super(My_Tch_Checkin_Form, self).__init__(parent)
+        self.setupUi(self)
+
+    def refresh(self):
+        print("refresh")
+
+    def search(self):
+        print("search")
+
+    def back(self):
+        controller.show_tch1_tch()
+
+# 注册界面
 class My_Register_Form(QMainWindow, Register_Form.Ui_Register_Form):
     def __init__(self, parent=None):
         super(My_Register_Form, self).__init__(parent)
@@ -78,13 +142,19 @@ class Controller:
         self.student = My_Student_Form()
         self.teacher = My_Teacher_Form()
         self.register = My_Register_Form()
-        self.stu_inquiry=My_Stu_Inquiry_Form()
+        self.stu_info = My_Stu_Info_Form()
+        self.stu_inquiry = My_Stu_Inquiry_Form()
+        self.tch_info = My_Tch_Info_Form()
+        self.tch_checkin = My_Tch_Checkin_Form()
         self.login.hide()
         self.student.hide()
         self.teacher.hide()
         self.stu_inquiry.hide()
+        self.stu_info.hide()
+        self.tch_info.hide()
         self.login.hide()
         self.register.hide()
+        self.tch_checkin.hide()
 
     def show_main(self):
         self.login.show()
@@ -109,6 +179,10 @@ class Controller:
         self.login.show()
         self.teacher.close()
 
+    def show_login_teacher(self):
+        self.login.close()
+        self.teacher.show()
+
     def show_student_login(self):
         self.login.show()
         self.student.close()
@@ -120,6 +194,22 @@ class Controller:
     def show_stu_stu1(self):
         self.stu_inquiry.show()
         self.student.close()
+
+    def show_stu_stu2(self):
+        self.stu_info.show()
+        self.student.close()
+
+    def show_stu2_stu(self):
+        self.student.show()
+        self.stu_info.close()
+
+    def show_tch_info(self):
+        self.tch_info.show()
+        self.teacher.close()
+
+    def show_info_tch(self):
+        self.teacher.show()
+        self.tch_info.close()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)  # 在 QApplication 方法中使用，创建应用程序对象

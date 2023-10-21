@@ -73,6 +73,7 @@ class Ui_Login_Form(object):
         self.label.setObjectName("label")
         self.horizontalLayout_5.addWidget(self.label)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.verticalLayoutWidget)
+        self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.horizontalLayout_5.addWidget(self.lineEdit_2)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -122,4 +123,3 @@ class Ui_Login_Form(object):
         self.pushButton.setText(_translate("Login_Form", "登录"))
         self.pushButton_3.setText(_translate("Login_Form", "注册"))
         self.pushButton_2.setText(_translate("Login_Form", "找回密码"))
-
