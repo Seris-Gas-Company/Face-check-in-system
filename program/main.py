@@ -84,7 +84,7 @@ class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
         pass
 
     def teacher4(self):
-        pass
+        controller.show_tch_checkin()
 
     def teacher5(self):
         controller.show_tch_info()
@@ -119,7 +119,7 @@ class My_Tch_Checkin_Form(QMainWindow, Checkin_Form.Ui_Checkin_Form):
         print("search")
 
     def back(self):
-        controller.show_info_tch()
+        controller.show_checkin_tch()
 
 # 注册界面
 class My_Register_Form(QMainWindow, Register_Form.Ui_Register_Form):
@@ -210,6 +210,14 @@ class Controller:
     def show_info_tch(self):
         self.teacher.show()
         self.tch_info.close()
+
+    def show_tch_checkin(self):
+        self.teacher.close()
+        self.tch_checkin.show()
+
+    def show_checkin_tch(self):
+        self.tch_checkin.close()
+        self.teacher.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)  # 在 QApplication 方法中使用，创建应用程序对象
