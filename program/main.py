@@ -1,11 +1,15 @@
 import datetime
-
+from imageio import imread
+import dlib
+from PIL import Image
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QAbstractItemView, QTableWidgetItem
 import sys
 from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form, Stu_Inquiry_Form, Stu_Info_Form
-from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form
+from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form, Stu_text
 import pymysql
 
+predictor_path = 'shape_predictor_68_face_landmarks.dat'
+predictor = dlib.shape_predictor(predictor_path)
 # 登录账号
 static_login_user = 0
 now_ctid=0
@@ -699,6 +703,7 @@ class My_Register_Form(QMainWindow, Register_Form.Ui_Register_Form):
         self.new_window.show()
         self.close()
 
+# 学生管理
 class My_Tch_stu_form(QMainWindow,Tch_stu_form.Ui_Tch_stu_form):
     def __init__(self, parent=None):
         super(My_Tch_stu_form, self).__init__(parent)
@@ -822,7 +827,103 @@ class My_Tch_stu_form(QMainWindow,Tch_stu_form.Ui_Tch_stu_form):
         for i in self.tableWidget.selectedItems():
             now_ctid = self.tableWidget.item(i.row(), 0).text()
             break
-        print(now_ctid)
+        self.newf = My_Tch_stu_text()
+        self.newf.show()
+        self.close()
+
+# 学生修改
+class My_Tch_stu_text(QMainWindow,Stu_text.Ui_Stu_text):
+    def __init__(self, parent=None):
+        super(My_Tch_stu_text, self).__init__(parent)
+        self.setupUi(self)
+        self.setAcceptDrops(True)
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM student WHERE sid=%s",now_ctid)
+        stu = cursor.fetchall()
+        self.lineEdit.setText(stu[0][1])
+        self.lineEdit_2.setText(stu[0][2])
+        self.lineEdit_3.setText(stu[0][3])
+        self.lineEdit_4.setText(stu[0][4])
+
+    def save(self):
+        uname=self.lineEdit.text()
+        sname=self.lineEdit_2.text()
+        sclass=self.lineEdit_3.text()
+        if len(self.lineEdit_4.text())>0:
+            if self.lineEdit_4.text().endswith(('.gif', '.jpg', '.png')):
+                detector = dlib.get_frontal_face_detector()
+                try:
+                    img = imread(self.lineEdit_4.text())
+                    dets = detector(img)
+                    print('检测到了 %d 个人脸' % len(dets))
+                    if len(dets)==0:
+                        spic=""
+                        QMessageBox.information(self, "error!", "未检测到人脸", QMessageBox.Ok)
+                    elif len(dets)>1:
+                        spic=""
+                        QMessageBox.information(self, "error!", "检测到过多人脸", QMessageBox.Ok)
+                    else:
+                        spic = self.lineEdit_4.text()
+                except:
+                    spic=""
+                    QMessageBox.information(self, "error!", "请检查文件路径", QMessageBox.Ok)
+            else:
+                spic = ""
+                QMessageBox.information(self, "error!", "不支持改文件格式", QMessageBox.Ok)
+        else:
+            spic = ""
+        value=(uname,sname,sclass,spic,now_ctid)
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("UPDATE student SET uname=%s,sname=%s,sclass=%s,spic=%s WHERE sid=%s", value)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("save")
+
+    def back(self):
+        print("back")
+        global now_ctid
+        now_ctid = 0
+        self.newf = My_Tch_stu_form()
+        self.newf.show()
+        self.close()
+
+    def open(self):
+        if len(self.lineEdit_4.text())==0:
+            QMessageBox.information(self, "error!", "照片路径不能为空", QMessageBox.Ok)
+        elif self.lineEdit_4.text().endswith(('.gif', '.jpg', '.png')):
+            img = Image.open(self.lineEdit_4.text())
+            img.show()
+        else:
+            QMessageBox.information(self, "error!", "不支持该文件类型", QMessageBox.Ok)
+
+    def dragEnterEvent(self, evn):
+        self.setWindowTitle('鼠标拖入窗口了')
+        self.lineEdit_4.setText(evn.mimeData().text().strip('file:///'))
+        evn.accept()
+
+    def dropEvent(self, evn):
+        self.setWindowTitle('鼠标放开了')
+
+    def dragMoveEvent(self, evn):
+        print('鼠标移入')
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)  # 在 QApplication 方法中使用，创建应用程序对象
