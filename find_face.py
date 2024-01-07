@@ -2,6 +2,7 @@ import dlib
 from imageio import imread
 import glob
 
+
 detector = dlib.get_frontal_face_detector()
 win = dlib.image_window()
 

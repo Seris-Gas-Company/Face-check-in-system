@@ -5,11 +5,37 @@ from PIL import Image
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QAbstractItemView, QTableWidgetItem
 import sys
 from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form, Stu_Inquiry_Form, Stu_Info_Form
-from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form, Stu_text
+from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form, Stu_text,Check1_Form
 import pymysql
+import numpy as np
 
+def get_feature(path):
+    img = imread(path)
+    dets = detector(img)
+    print('检测到了 %d 个人脸' % len(dets))
+    # 这里假设每张图只有一个人脸
+    shape = predictor(img, dets[0])
+    face_vector = facerec.compute_face_descriptor(img, shape)
+    return (face_vector)
+def distance(a, b):
+    a, b = np.array(a), np.array(b)
+    sub = np.sum((a - b) ** 2)
+    add = (np.sum(a ** 2) + np.sum(b ** 2)) / 2.
+    return sub / add
+
+def classifier(a, b, t=0.09):
+    if (distance(a, b) <= t):
+        ret = True
+    else:
+        ret = False
+    return (ret)
+
+# 导入模型
+detector = dlib.get_frontal_face_detector()
 predictor_path = 'shape_predictor_68_face_landmarks.dat'
 predictor = dlib.shape_predictor(predictor_path)
+face_rec_model_path = 'dlib_face_recognition_resnet_model_v1.dat'
+facerec = dlib.face_recognition_model_v1(face_rec_model_path)
 # 登录账号
 static_login_user = 0
 now_ctid=0
@@ -111,22 +137,22 @@ class My_Stu_Inquiry_Form(QMainWindow, Stu_Inquiry_Form.Ui_Stu_Inquiry_Form):
         print(results)
         for result in results:
             self.tableWidget.insertRow(row_count)
-            self.tableWidget.setItem(0, 0, QTableWidgetItem(result[1]))
+            self.tableWidget.setItem(row_count, 0, QTableWidgetItem(result[1]))
             if result[3]==1:
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("签到"))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("签到"))
             elif result[3]==2:
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("请假"))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("请假"))
             elif result[3]==3:
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("迟到"))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("迟到"))
             elif result[3]==4:
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("早退"))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("早退"))
             elif result[3]==5:
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("旷课"))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("旷课"))
             else :
-                self.tableWidget.setItem(0, 1, QTableWidgetItem("没点名"))
-            self.tableWidget.setItem(0, 2, QTableWidgetItem(stu[0][1]))
-            self.tableWidget.setItem(0, 3, QTableWidgetItem(stu[0][2]))
-            self.tableWidget.setItem(0, 4, QTableWidgetItem(result[5]))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem("没点名"))
+            self.tableWidget.setItem(row_count, 2, QTableWidgetItem(stu[0][1]))
+            self.tableWidget.setItem(row_count, 3, QTableWidgetItem(stu[0][2]))
+            self.tableWidget.setItem(row_count, 4, QTableWidgetItem(result[5]))
             row_count+=1
 
     def select(self):
@@ -223,7 +249,9 @@ class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
         pass
 
     def teacher2(self):
-        pass
+        self.new_window = My_Check1_Form()
+        self.new_window.show()
+        self.close()
 
     def teacher3(self):
         self.new_window = My_Tch_stu_form()
@@ -636,7 +664,6 @@ class My_Checkin_text(QMainWindow, Checkin_text.Ui_Checkin_text):
         self.close()
         QMessageBox.information(self, "删除成功", "删除成功", QMessageBox.Ok)
 
-
 # 注册界面
 class My_Register_Form(QMainWindow, Register_Form.Ui_Register_Form):
     def __init__(self, parent=None):
@@ -923,6 +950,444 @@ class My_Tch_stu_text(QMainWindow,Stu_text.Ui_Stu_text):
 
     def dragMoveEvent(self, evn):
         print('鼠标移入')
+
+# 非实时签到
+class My_Check1_Form(QMainWindow,Check1_Form.Ui_Check1_Form):
+    def __init__(self, parent=None):
+        super(My_Check1_Form, self).__init__(parent)
+        self.setupUi(self)
+        self.setAcceptDrops(True)
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget_2.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget_2.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.setRowCount(0)
+        self.tableWidget_2.setRowCount(0)
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM student")
+        stu = cursor.fetchall()
+        row_count=0
+        print(stu)
+        for s in stu:
+            self.tableWidget.insertRow(row_count)
+            self.tableWidget.setItem(row_count, 0, QTableWidgetItem(s[3]))
+            self.tableWidget.setItem(row_count, 1, QTableWidgetItem(s[1]))
+            self.tableWidget.setItem(row_count, 2, QTableWidgetItem(s[2]))
+            self.tableWidget.setItem(row_count, 3, QTableWidgetItem(str(s[0])))
+            row_count += 1
+        now = datetime.datetime.now()
+        now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        tid = cursor.fetchall()
+        sql="SELECT * FROM stucheckin WHERE cttime like \'%" +now_time+ "%\' AND tid =" +str(tid[0][0])
+        print(sql)
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        print(results)
+        row_count = 0
+        for result in results:
+            self.tableWidget_2.insertRow(row_count)
+            cursor.execute("SELECT uname,sname FROM student WHERE sid=%s", result[2])
+            stu = cursor.fetchall()
+            self.tableWidget_2.setItem(row_count, 0, QTableWidgetItem(result[5])) # 时间
+            self.tableWidget_2.setItem(row_count, 1, QTableWidgetItem(result[1])) # 课程名
+            self.tableWidget_2.setItem(row_count, 2, QTableWidgetItem(stu[0][1])) # 姓名
+            self.tableWidget_2.setItem(row_count, 3, QTableWidgetItem(stu[0][0])) # 学号
+            # 情况
+            if result[3] == 1:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("签到"))
+            elif result[3] == 2:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("请假"))
+            elif result[3] == 3:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("迟到"))
+            elif result[3] == 4:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("早退"))
+            elif result[3] == 5:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("旷课"))
+            else:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("没点名"))
+            # 编号
+            self.tableWidget_2.setItem(row_count, 5, QTableWidgetItem(str(result[0])))
+            row_count += 1
+        cursor.close()
+        conn.close()
+
+    def refresh(self):
+        print("refresh")
+        self.label_5.setText("学生")
+        global now_ctid
+        now_ctid=0
+        self.tableWidget.setRowCount(0)
+        self.tableWidget_2.setRowCount(0)
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM student")
+        stu = cursor.fetchall()
+        row_count = 0
+        print(stu)
+        for s in stu:
+            self.tableWidget.insertRow(row_count)
+            self.tableWidget.setItem(row_count, 0, QTableWidgetItem(s[3]))
+            self.tableWidget.setItem(row_count, 1, QTableWidgetItem(s[1]))
+            self.tableWidget.setItem(row_count, 2, QTableWidgetItem(s[2]))
+            self.tableWidget.setItem(row_count, 3, QTableWidgetItem(str(s[0])))
+            row_count += 1
+        now = datetime.datetime.now()
+        now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        tid = cursor.fetchall()
+        sql = "SELECT * FROM stucheckin WHERE cttime like \'%" + now_time + "%\' AND tid =" + str(tid[0][0])
+        print(sql)
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        print(results)
+        row_count = 0
+        for result in results:
+            self.tableWidget_2.insertRow(row_count)
+            cursor.execute("SELECT uname,sname FROM student WHERE sid=%s", result[2])
+            stu = cursor.fetchall()
+            self.tableWidget_2.setItem(row_count, 0, QTableWidgetItem(result[5]))  # 时间
+            self.tableWidget_2.setItem(row_count, 1, QTableWidgetItem(result[1]))  # 课程名
+            self.tableWidget_2.setItem(row_count, 2, QTableWidgetItem(stu[0][1]))  # 姓名
+            self.tableWidget_2.setItem(row_count, 3, QTableWidgetItem(stu[0][0]))  # 学号
+            # 情况
+            if result[3] == 1:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("签到"))
+            elif result[3] == 2:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("请假"))
+            elif result[3] == 3:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("迟到"))
+            elif result[3] == 4:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("早退"))
+            elif result[3] == 5:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("旷课"))
+            else:
+                self.tableWidget_2.setItem(row_count, 4, QTableWidgetItem("没点名"))
+            # 编号
+            self.tableWidget_2.setItem(row_count, 5, QTableWidgetItem(str(result[0])))
+            row_count += 1
+        cursor.close()
+        conn.close()
+
+    def search(self):
+        self.tableWidget.setRowCount(0)
+        global now_ctid
+        now_ctid=0
+        self.label_5.setText("学生")
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor=conn.cursor()
+        sid=self.lineEdit_2.text()
+        flag1 = 0
+        class_name=self.lineEdit_3.text()
+        flag2 = 0
+        if len(sid) != 0:
+            flag1 = 1
+        if len(class_name) != 0:
+            flag2 = 1
+        sql = "SELECT * FROM student WHERE "
+        count = 0
+        if flag1 != 0:
+            count += 1
+            sql = sql + "uname like \'%" + sid + "%\'"
+        if flag2 != 0:
+            if count > 0:
+                sql = sql + " AND "
+            count += 1
+            sql = sql + "sclass like \'%" + class_name + "%\'"
+        print(sql)
+        if count > 0:
+            row_count = 0
+            cursor.execute(sql)
+            stu=cursor.fetchall()
+            for s in stu:
+                self.tableWidget.insertRow(row_count)
+                # 班级
+                self.tableWidget.setItem(row_count, 0, QTableWidgetItem(s[3]))
+                # 学号
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem(s[1]))
+                # 姓名
+                self.tableWidget.setItem(row_count, 2, QTableWidgetItem(s[2]))
+                # 编号
+                self.tableWidget.setItem(row_count, 3, QTableWidgetItem(str(s[0])))
+                row_count+=1
+        cursor.close()
+        conn.close()
+        print("search")
+
+    def select_student(self):
+        global now_ctid
+        name=""
+        for i in self.tableWidget.selectedItems():
+            now_ctid = self.tableWidget.item(i.row(), 3).text()
+            name=self.tableWidget.item(i.row(),2).text()+self.tableWidget.item(i.row(),1).text()
+            break
+        self.label_5.setText("当前学生:"+name)
+        print("select_student")
+
+    def select_checkin(self):
+        global now_ctid
+        for i in self.tableWidget_2.selectedItems():
+            now_ctid = self.tableWidget_2.item(i.row(), 5).text()
+            break
+        self.label_5.setText("学生")
+        print("select_checkin")
+        self.new_window = My_Checkin_text()
+        self.new_window.show()
+        self.close()
+
+    def pic(self):
+        print("pic")
+        if len(self.lineEdit.text())>0:
+            pic1_path=self.lineEdit.text()
+            global now_ctid
+            conn = pymysql.connect(
+                host='localhost',  # 主机名（或IP地址）
+                port=3306,  # 端口号，默认为3306
+                user='root',  # 用户名
+                password='123852',  # 密码
+                charset='utf8mb4'  # 设置字符编码
+            )
+            conn.select_db("checkin")
+            cursor = conn.cursor()
+            cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+            tid = cursor.fetchall()[0][0]
+            cursor = conn.cursor()
+            if now_ctid == 0:
+                QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+            elif len(self.lineEdit_4.text()) == 0:
+                QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+            else:
+                cursor.execute("SELECT * FROM student WHERE sid=%s", now_ctid)
+                s = cursor.fetchall()
+                pic2_path = s[0][4]
+                if len(pic2_path) == 0:
+                    QMessageBox.information(self, "error!", "该生未录入照片", QMessageBox.Ok)
+                else:
+                    feature_lists1=get_feature(pic1_path)
+                    feature_lists2=get_feature(pic2_path)
+                    if classifier(feature_lists1, feature_lists2):
+                        now = datetime.datetime.now()
+                        now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                            now.minute)
+                        value = (self.lineEdit_4.text(), now_ctid, 1, tid, now_time)
+                        print(value)
+                        sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+                        cursor.execute(sql, value)
+                        conn.commit()
+                        now_ctid = 0
+                        self.label_5.setText("学生")
+                        QMessageBox.information(self, "签到成功", "已签到！", QMessageBox.Ok)
+                    else:
+                        QMessageBox.information(self, "error!", "照片与数据库当中的人不一致", QMessageBox.Ok)
+                cursor.close()
+                conn.close()
+        else:
+            QMessageBox.information(self, "error!", "照片路径不能为空", QMessageBox.Ok)
+
+    def back(self):
+        global now_ctid
+        now_ctid=0
+        print("back")
+        self.new_window = My_Teacher_Form()
+        self.new_window.show()
+        self.close()
+
+    def qiandao(self):
+        global now_ctid
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s",static_login_user)
+        if now_ctid==0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit_4.text())==0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            tid=cursor.fetchall()[0][0]
+            now=datetime.datetime.now()
+            now_time=str(now.year)+"/"+str(now.month)+"/"+str(now.day)+" "+str(now.hour)+":"+str(now.minute)
+            value=(self.lineEdit_4.text(),now_ctid,1,tid,now_time)
+            print(value)
+            sql="INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            cursor.execute(sql,value)
+            conn.commit()
+            now_ctid = 0
+            self.label_5.setText("学生")
+            QMessageBox.information(self, "签到成功", "已签到！", QMessageBox.Ok)
+        cursor.close()
+        conn.close()
+
+    def qingjia(self):
+        print("qingjia")
+        global now_ctid
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        if now_ctid == 0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit_4.text()) == 0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            tid = cursor.fetchall()[0][0]
+            now = datetime.datetime.now()
+            now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                now.minute)
+            value = (self.lineEdit_4.text(), now_ctid, 2, tid, now_time)
+            print(value)
+            sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            cursor.execute(sql, value)
+            conn.commit()
+            now_ctid = 0
+            self.label_5.setText("学生")
+            QMessageBox.information(self, "请假", "已记录该学生请假！", QMessageBox.Ok)
+        cursor.close()
+        conn.close()
+
+    def chidao(self):
+        print("chidao")
+        global now_ctid
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        if now_ctid == 0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit_4.text()) == 0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            tid = cursor.fetchall()[0][0]
+            now = datetime.datetime.now()
+            now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                now.minute)
+            value = (self.lineEdit_4.text(), now_ctid, 3, tid, now_time)
+            print(value)
+            sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            cursor.execute(sql, value)
+            conn.commit()
+            now_ctid = 0
+            self.label_5.setText("学生")
+            QMessageBox.information(self, "迟到", "已记录该学生迟到！", QMessageBox.Ok)
+        cursor.close()
+        conn.close()
+
+    def zaotui(self):
+        print("zaotui")
+        global now_ctid
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        if now_ctid == 0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit_4.text()) == 0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            tid = cursor.fetchall()[0][0]
+            now = datetime.datetime.now()
+            now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                now.minute)
+            value = (self.lineEdit_4.text(), now_ctid, 4, tid, now_time)
+            print(value)
+            sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            cursor.execute(sql, value)
+            conn.commit()
+            now_ctid = 0
+            self.label_5.setText("学生")
+            QMessageBox.information(self, "早退", "已记录该学生早退！", QMessageBox.Ok)
+        cursor.close()
+        conn.close()
+
+    def kuangke(self):
+        print("kuangke")
+        global now_ctid
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        conn.select_db("checkin")
+        cursor = conn.cursor()
+        cursor.execute("SELECT tid FROM teacher WHERE uname=%s", static_login_user)
+        if now_ctid == 0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit_4.text()) == 0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            tid = cursor.fetchall()[0][0]
+            now = datetime.datetime.now()
+            now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                now.minute)
+            value = (self.lineEdit_4.text(), now_ctid, 5, tid, now_time)
+            print(value)
+            sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            cursor.execute(sql, value)
+            conn.commit()
+            now_ctid = 0
+            self.label_5.setText("学生")
+            QMessageBox.information(self, "旷课", "已记录该学生旷课！", QMessageBox.Ok)
+        cursor.close()
+        conn.close()
+
+    def dragEnterEvent(self, evn):
+        self.setWindowTitle('鼠标拖入窗口了')
+        self.lineEdit.setText(evn.mimeData().text().strip('file:///'))
+        evn.accept()
+
+    def dropEvent(self, evn):
+        self.setWindowTitle('鼠标放开了')
+
+    def dragMoveEvent(self, evn):
+        print('鼠标移入')
+# 实时签到
 
 
 if __name__ == '__main__':

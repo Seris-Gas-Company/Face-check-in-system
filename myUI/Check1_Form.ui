@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>422</height>
+    <width>750</width>
+    <height>550</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>签到系统</string>
@@ -18,99 +24,132 @@
     <normaloff>../icon/APP_icon.ico</normaloff>../icon/APP_icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <item>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>300</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(0, 0, 0);</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="pushButton">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="text">
-           <string>签到</string>
+           <string>学生</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="pushButton_6">
-          <property name="text">
-           <string>迟到</string>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
           </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="pushButton_5">
           <property name="text">
-           <string>早退</string>
+           <string>签到记录</string>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="pushButton_3">
-          <property name="text">
-           <string>打开摄像头</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="pushButton_4">
-          <property name="text">
-           <string>刷新</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="text">
-           <string>返回</string>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QTableWidget" name="tableWidget">
+          <column>
+           <property name="text">
+            <string>班级</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>学号</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>姓名</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>编号</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="tableWidget_2">
+          <column>
+           <property name="text">
+            <string>签到时间</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>姓名</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>学生姓名</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>学号</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>签到情况</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>编号</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>课程</string>
+           <string>照片路径</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QLineEdit" name="lineEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>学号</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_2"/>
         </item>
         <item>
          <widget class="QLabel" name="label_3">
@@ -120,12 +159,90 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_2"/>
+         <widget class="QLineEdit" name="lineEdit_3"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>课程名称</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_4"/>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QColumnView" name="columnView"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QPushButton" name="pushButton_5">
+          <property name="text">
+           <string>签到</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_6">
+          <property name="text">
+           <string>请假</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_7">
+          <property name="text">
+           <string>迟到</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_8">
+          <property name="text">
+           <string>早退</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_9">
+          <property name="text">
+           <string>旷课</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>查询</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>重置</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="text">
+           <string>照片签到</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_4">
+          <property name="text">
+           <string>返回</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -136,7 +253,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>635</width>
+     <width>750</width>
      <height>22</height>
     </rect>
    </property>
@@ -146,23 +263,193 @@
  <resources/>
  <connections>
   <connection>
+   <sender>tableWidget</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>select_student()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>9</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableWidget_2</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>select_checkin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>378</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>304</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>pushButton_3</sender>
    <signal>clicked()</signal>
    <receiver>Check1_Form</receiver>
-   <slot>open_camera()</slot>
+   <slot>pic()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>71</x>
-     <y>381</y>
+     <x>383</x>
+     <y>382</y>
     </hint>
     <hint type="destinationlabel">
-     <x>80</x>
-     <y>401</y>
+     <x>360</x>
+     <y>399</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_4</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>back()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>510</x>
+     <y>389</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>473</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>refresh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>231</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>search()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>377</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_5</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>qiandao()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>77</x>
+     <y>334</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_6</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>qingjia()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>187</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>187</x>
+     <y>334</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_7</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>chidao()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>334</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_8</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>zaotui()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>422</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>443</x>
+     <y>333</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_9</sender>
+   <signal>clicked()</signal>
+   <receiver>Check1_Form</receiver>
+   <slot>kuangke()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>553</x>
+     <y>347</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>572</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>open_camera()</slot>
+  <slot>select_student()</slot>
+  <slot>select_checkin()</slot>
+  <slot>qiandao()</slot>
+  <slot>chidao()</slot>
+  <slot>zaotui()</slot>
+  <slot>kuangke()</slot>
+  <slot>qingjia()</slot>
+  <slot>search()</slot>
+  <slot>pic()</slot>
+  <slot>back()</slot>
+  <slot>refresh()</slot>
  </slots>
 </ui>

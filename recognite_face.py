@@ -26,6 +26,12 @@ def distance(a, b):
     add = (np.sum(a ** 2) + np.sum(b ** 2)) / 2.
     return sub / add
 
+def classifier(a, b, t=0.09):
+    if (distance(a, b) <= t):
+        ret = True
+    else:
+        ret = False
+    return (ret)
 
 path_lists1 = ["chenping.png", "vv1.jpg"]
 path_lists2 = ["vv2.png", "vvtest.png"]
@@ -45,12 +51,7 @@ out1 = distance(feature_lists1[0], feature_lists1[1])
 out2 = distance(feature_lists2[0], feature_lists2[1])
 
 
-def classifier(a, b, t=0.09):
-    if (distance(a, b) <= t):
-        ret = True
-    else:
-        ret = False
-    return (ret)
+
 
 print("vvtest is 张维为", classifier(feature_lists2[1], feature_lists2[1]))
 print("chenping is 张维为", classifier(feature_lists1[0], feature_lists2[1]))
