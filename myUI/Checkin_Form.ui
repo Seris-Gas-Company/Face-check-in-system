@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>572</width>
-    <height>325</height>
+    <width>600</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,68 +21,68 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../icon/APP_icon.ico</normaloff>../icon/APP_icon.ico</iconset>
+    <normaloff>C:/Users/zhangyuze/.designer/icon/APP_icon.ico</normaloff>C:/Users/zhangyuze/.designer/icon/APP_icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="2">
-     <widget class="QColumnView" name="columnView"/>
-    </item>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <layout class="QFormLayout" name="formLayout_2">
         <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>姓名</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit"/>
-        </item>
-        <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
            <string>学号</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="0" column="1">
          <widget class="QLineEdit" name="lineEdit_2"/>
         </item>
-        <item row="2" column="0">
+        <item row="1" column="0">
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>签到情况</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="1" column="1">
          <widget class="QLineEdit" name="lineEdit_3"/>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>课程名称</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="2" column="1">
          <widget class="QLineEdit" name="lineEdit_4"/>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_5">
           <property name="text">
            <string>日期</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QDateEdit" name="dateEdit"/>
         </item>
        </layout>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
@@ -111,6 +111,45 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="2">
+     <widget class="QTableWidget" name="tableWidget">
+      <column>
+       <property name="text">
+        <string>课程名称</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>签到时间</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>签到学生</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>学生学号</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>签到状态</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>编号</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string/>
+       </property>
+      </column>
+     </widget>
+    </item>
     <item row="0" column="1">
      <widget class="Line" name="line">
       <property name="orientation">
@@ -125,7 +164,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>572</width>
+     <width>600</width>
      <height>22</height>
     </rect>
    </property>
@@ -141,8 +180,8 @@
    <slot>refresh()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>52</x>
-     <y>228</y>
+     <x>63</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>52</x>
@@ -157,8 +196,8 @@
    <slot>search()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>230</y>
+     <x>202</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>173</x>
@@ -173,12 +212,28 @@
    <slot>back()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>236</x>
-     <y>227</y>
+     <x>301</x>
+     <y>297</y>
     </hint>
     <hint type="destinationlabel">
      <x>268</x>
      <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableWidget</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>Checkin_Form</receiver>
+   <slot>xiugai()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>462</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>386</y>
     </hint>
    </hints>
   </connection>
@@ -187,5 +242,6 @@
   <slot>refresh()</slot>
   <slot>search()</slot>
   <slot>back()</slot>
+  <slot>xiugai()</slot>
  </slots>
 </ui>

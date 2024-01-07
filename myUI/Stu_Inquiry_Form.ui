@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
-    <height>595</height>
+    <width>715</width>
+    <height>496</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,14 +19,40 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QColumnView" name="columnView"/>
-    </item>
     <item row="1" column="0">
      <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>返回</string>
       </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QTableWidget" name="tableWidget">
+      <column>
+       <property name="text">
+        <string>课程名称</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>签到情况</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>学号</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>姓名</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>签到时间</string>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>
@@ -36,7 +62,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>791</width>
+     <width>715</width>
      <height>22</height>
     </rect>
    </property>
@@ -52,8 +78,8 @@
    <slot>back()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>270</x>
-     <y>557</y>
+     <x>279</x>
+     <y>466</y>
     </hint>
     <hint type="destinationlabel">
      <x>102</x>
@@ -61,8 +87,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tableWidget</sender>
+   <signal>cellDoubleClicked(int,int)</signal>
+   <receiver>Stu_Inquiry_Form</receiver>
+   <slot>select()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>93</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>back()</slot>
+  <slot>select()</slot>
  </slots>
 </ui>

@@ -50,14 +50,14 @@
     <item>
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>照片签到</string>
+       <string>非实时签到</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_3">
       <property name="text">
-       <string>点名签到</string>
+       <string>学生管理</string>
       </property>
      </widget>
     </item>
