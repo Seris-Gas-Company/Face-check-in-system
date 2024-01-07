@@ -12,8 +12,6 @@ import numpy as np
 def get_feature(path):
     img = imread(path)
     dets = detector(img)
-    print('检测到了 %d 个人脸' % len(dets))
-    # 这里假设每张图只有一个人脸
     shape = predictor(img, dets[0])
     face_vector = facerec.compute_face_descriptor(img, shape)
     return (face_vector)
@@ -890,7 +888,6 @@ class My_Tch_stu_text(QMainWindow,Stu_text.Ui_Stu_text):
                 try:
                     img = imread(self.lineEdit_4.text())
                     dets = detector(img)
-                    print('检测到了 %d 个人脸' % len(dets))
                     if len(dets)==0:
                         spic=""
                         QMessageBox.information(self, "error!", "未检测到人脸", QMessageBox.Ok)
