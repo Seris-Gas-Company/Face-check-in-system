@@ -22,6 +22,5 @@ for i, d in enumerate(dets):
 win.clear_overlay()
 win.set_image(img)
 win.add_overlay(dets)
-win.add_overlay(shape)
 dlib.hit_enter_to_continue()
 
