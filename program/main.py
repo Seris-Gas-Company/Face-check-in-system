@@ -1375,15 +1375,8 @@ class My_Check1_Form(QMainWindow,Check1_Form.Ui_Check1_Form):
         conn.close()
 
     def dragEnterEvent(self, evn):
-        self.setWindowTitle('鼠标拖入窗口了')
         self.lineEdit.setText(evn.mimeData().text().strip('file:///'))
         evn.accept()
-
-    def dropEvent(self, evn):
-        self.setWindowTitle('鼠标放开了')
-
-    def dragMoveEvent(self, evn):
-        print('鼠标移入')
 # 实时签到
 
 
