@@ -1,11 +1,13 @@
 import datetime
+from PyQt5 import QtCore
+import cv2
 from imageio import imread
 import dlib
 from PIL import Image
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QAbstractItemView, QTableWidgetItem
 import sys
 from myUI import Login_Form, Register_Form, Student_Form, Teacher_Form, Stu_Inquiry_Form, Stu_Info_Form
-from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form, Stu_text,Check1_Form
+from myUI import Tch_Info_Form, Checkin_Form ,Checkin_text, Tch_stu_form, Stu_text,Check1_Form,Check2_Form
 import pymysql
 import numpy as np
 
@@ -244,7 +246,9 @@ class My_Teacher_Form(QMainWindow, Teacher_Form.Ui_Teacher_Form):
         self.setupUi(self)
 
     def teacher1(self):
-        pass
+        self.new_window = My_Check2_Form()
+        self.new_window.show()
+        self.close()
 
     def teacher2(self):
         self.new_window = My_Check1_Form()
@@ -551,7 +555,6 @@ class My_Tch_Checkin_Form(QMainWindow, Checkin_Form.Ui_Checkin_Form):
         print(now_ctid)
         self.new_window = My_Checkin_text()
         self.new_window.show()
-        self.close()
 
 # 签到修改界面
 class My_Checkin_text(QMainWindow, Checkin_text.Ui_Checkin_text):
@@ -631,13 +634,12 @@ class My_Checkin_text(QMainWindow, Checkin_text.Ui_Checkin_text):
             conn.commit()
         cursor.close()
         conn.close()
+        self.close()
         QMessageBox.information(self, "修改成功", "修改成功", QMessageBox.Ok)
     def back(self):
         print("back")
         global now_ctid
         now_ctid = 0
-        self.new_window = My_Tch_Checkin_Form()
-        self.new_window.show()
         self.close()
 
     def delete(self):
@@ -657,8 +659,6 @@ class My_Checkin_text(QMainWindow, Checkin_text.Ui_Checkin_text):
         cursor.close()
         conn.close()
         now_ctid = 0
-        self.new_window = My_Tch_Checkin_Form()
-        self.new_window.show()
         self.close()
         QMessageBox.information(self, "删除成功", "删除成功", QMessageBox.Ok)
 
@@ -1152,7 +1152,6 @@ class My_Check1_Form(QMainWindow,Check1_Form.Ui_Check1_Form):
         print("select_checkin")
         self.new_window = My_Checkin_text()
         self.new_window.show()
-        self.close()
 
     def pic(self):
         print("pic")
@@ -1378,6 +1377,51 @@ class My_Check1_Form(QMainWindow,Check1_Form.Ui_Check1_Form):
         self.lineEdit.setText(evn.mimeData().text().strip('file:///'))
         evn.accept()
 # 实时签到
+class My_Check2_Form(QMainWindow,Check2_Form.Ui_Check2_Form):
+    def __init__(self, parent=None):
+        super(My_Check2_Form, self).__init__(parent)
+        self.setupUi(self)
+        self.timer_camera = QtCore.QTimer()  # 定义定时器，用于控制显示视频的帧率
+        self.cap = cv2.VideoCapture()  # 视频流
+        self.CAM_NUM = 0  # 为0时表示视频流来自笔记本内置摄像头
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.setRowCount(0)
+        conn = pymysql.connect(
+            host='localhost',  # 主机名（或IP地址）
+            port=3306,  # 端口号，默认为3306
+            user='root',  # 用户名
+            password='123852',  # 密码
+            charset='utf8mb4'  # 设置字符编码
+        )
+        cursor=conn.cursor()
+        cursor.close()
+        conn.close()
+
+    def back(self):
+        self.new=My_Teacher_Form()
+        self.new.show()
+        self.close()
+
+    def qiandao(self):
+        pass
+    def select(self):
+        pass
+    def openOrClose(self):
+        if self.timer_camera.isActive() == False:  # 若定时器未启动
+            flag = self.cap.open(self.CAM_NUM)  # 参数是0，表示打开笔记本的内置摄像头，参数是视频文件路径则打开视频
+            if flag == False:  # flag表示open()成不成功
+                QMessageBox.warning(self, "失败", "请检查摄像头", QMessageBox.Ok)
+            else:
+                self.timer_camera.start(50)  # 定时器开始计时30ms，结果是每过30ms从摄像头中取一帧显示
+                self.pushButton.setText('关闭摄像头')
+        else:
+            self.timer_camera.stop()  # 关闭定时器
+            self.cap.release()  # 释放视频流
+            self.label.clear()  # 清空视频显示区域
+            self.pushButton.setText('打开摄像头')
+
+
 
 
 if __name__ == '__main__':
