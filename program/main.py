@@ -39,6 +39,7 @@ facerec = dlib.face_recognition_model_v1(face_rec_model_path)
 # 登录账号
 static_login_user = 0
 now_ctid=0
+now_sid=0
 
 # 登录界面
 class My_Login_Form(QMainWindow, Login_Form.Ui_Login_Form):
@@ -1381,37 +1382,66 @@ class My_Check2_Form(QMainWindow,Check2_Form.Ui_Check2_Form):
     def __init__(self, parent=None):
         super(My_Check2_Form, self).__init__(parent)
         self.setupUi(self)
-        self.timer_camera = QtCore.QTimer()  # 定义定时器，用于控制显示视频的帧率
-        self.cap = cv2.VideoCapture()  # 视频流
-        self.CAM_NUM = 0  # 为0时表示视频流来自笔记本内置摄像头
+        self.timer_camera = QtCore.QTimer()
+        self.cap = cv2.VideoCapture()
+        self.CAM_NUM = 0
         self.timer_camera.timeout.connect(self.show_camera)
         self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tableWidget.setRowCount(0)
-        conn = pymysql.connect(
+        self.conn = pymysql.connect(
             host='localhost',  # 主机名（或IP地址）
             port=3306,  # 端口号，默认为3306
             user='root',  # 用户名
             password='123852',  # 密码
             charset='utf8mb4'  # 设置字符编码
         )
-        cursor=conn.cursor()
-        cursor.close()
-        conn.close()
+        self.conn.select_db("checkin")
+        self.cursor=self.conn.cursor()
+        self.cursor.execute("SELECT * FROM student")
+        self.stu=self.cursor.fetchall()
+        self.feature_lists1 = []
+        for s in self.stu:
+            if s[4]==None:
+                no=()
+                self.feature_lists1.append(no)
+            else:
+                self.feature_lists1.append(get_feature(s[4]))
+        self.cursor.execute("SELECT * FROM teacher WHERE uname=%s",static_login_user)
+        self.tid=self.cursor.fetchall()[0][0]
 
     def back(self):
+        self.cursor.close()
+        self.conn.close()
+        self.timer_camera.stop()
+        self.cap.release()
         self.new=My_Teacher_Form()
         self.new.show()
         self.close()
 
     def qiandao(self):
-        pass
+        if now_sid == 0:
+            QMessageBox.information(self, "error!", "未选中学生", QMessageBox.Ok)
+        elif len(self.lineEdit.text()) == 0:
+            QMessageBox.information(self, "error!", "课程名称不能为空", QMessageBox.Ok)
+        else:
+            now = datetime.datetime.now()
+            now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " " + str(now.hour) + ":" + str(
+                now.minute)
+            value = (self.lineEdit.text(), now_sid, 1, self.tid, now_time)
+            print(value)
+            sql = "INSERT INTO stucheckin (ctname,sid,ctstate,tid,cttime) VALUES (%s,%s,%s,%s,%s);"
+            self.cursor.execute(sql, value)
+            self.conn.commit()
+            QMessageBox.information(self, "签到成功", self.lineEdit_2.text()+"已签到！", QMessageBox.Ok)
+
     def select(self):
         pass
+
     def openOrClose(self):
         if self.timer_camera.isActive() == False:
             flag = self.cap.open(self.CAM_NUM)
-            if flag == False:  # flag表示open()成不成功
+            if flag == False:
                 QMessageBox.warning(self, "失败", "请检查摄像头", QMessageBox.Ok)
             else:
                 self.timer_camera.start(30)
@@ -1423,17 +1453,52 @@ class My_Check2_Form(QMainWindow,Check2_Form.Ui_Check2_Form):
             self.pushButton.setText('打开摄像头')
 
     def show_camera(self):
+        global now_sid
+        now_sid=0
         flag, self.image = self.cap.read()
         dets = detector(self.image)
-        print(dets) # rectangles[[(161, 257) (376, 472)]]
         print('检测到了 %d 个人脸' % len(dets))
         if len(dets)>0:
             for det in dets:
                 cv2.rectangle(self.image, (det.left(), det.top()), (det.right(), det.bottom()), (0,255,0), 2)
+            shape = predictor(self.image, dets[0])
+            face_vector = (facerec.compute_face_descriptor(self.image, shape))
+            no=0
+            for face_vector_test in self.feature_lists1:
+                if len(face_vector_test)==0:
+                    pass
+                elif(classifier(face_vector_test,face_vector)):
+                    now_sid=self.stu[no][0]
+                    self.lineEdit_2.setText(self.stu[no][2]+self.stu[no][1])
+                    break
+                no += 1
+            if now_sid==0:
+                self.lineEdit_2.setText("查无此人")
+        else:
+            self.lineEdit_2.setText("没有人脸，谢谢喵！")
         show = cv2.resize(self.image, (640, 480))  # 把读到的帧的大小重新设置为 640x480
         show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)  # 视频色彩转换回RGB，这样才是现实的颜色
         showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0],QtGui.QImage.Format_RGB888)
         self.label.setPixmap(QtGui.QPixmap.fromImage(showImage))  # 往显示视频的Label里 显示QImage
+
+    def refresh(self):
+        now=datetime.datetime.now()
+        now_time = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+        sql = "SELECT * FROM stucheckin WHERE cttime like \'%" + now_time + "%\' AND tid =" + str(self.tid)
+        self.cursor.execute(sql)
+        results = self.cursor.fetchall()
+        row_count = 0
+        print(results)
+        for result in results:
+            self.tableWidget.insertRow(row_count)
+            self.cursor.execute("SELECT uname,sname FROM student WHERE sid=%s", result[2])
+            stu = self.cursor.fetchall()
+            self.tableWidget.setItem(row_count, 0, QTableWidgetItem(result[1]))
+            self.tableWidget.setItem(row_count, 1, QTableWidgetItem(result[5]))
+            self.tableWidget.setItem(row_count, 2, QTableWidgetItem(stu[0][1]))
+            self.tableWidget.setItem(row_count, 3, QTableWidgetItem(stu[0][0]))
+            row_count += 1
+
 
 
 
