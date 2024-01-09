@@ -17,6 +17,7 @@ def get_feature(path):
     shape = predictor(img, dets[0])
     face_vector = facerec.compute_face_descriptor(img, shape)
     return (face_vector)
+
 def distance(a, b):
     a, b = np.array(a), np.array(b)
     sub = np.sum((a - b) ** 2)
@@ -36,6 +37,7 @@ predictor_path = 'shape_predictor_68_face_landmarks.dat'
 predictor = dlib.shape_predictor(predictor_path)
 face_rec_model_path = 'dlib_face_recognition_resnet_model_v1.dat'
 facerec = dlib.face_recognition_model_v1(face_rec_model_path)
+
 # 登录账号
 static_login_user = 0
 now_ctid=0
@@ -1400,9 +1402,10 @@ class My_Check2_Form(QMainWindow,Check2_Form.Ui_Check2_Form):
         self.cursor=self.conn.cursor()
         self.cursor.execute("SELECT * FROM student")
         self.stu=self.cursor.fetchall()
+        print(self.stu)
         self.feature_lists1 = []
         for s in self.stu:
-            if s[4]==None:
+            if s[4]==None or s[4]=="":
                 no=()
                 self.feature_lists1.append(no)
             else:
@@ -1498,9 +1501,6 @@ class My_Check2_Form(QMainWindow,Check2_Form.Ui_Check2_Form):
             self.tableWidget.setItem(row_count, 2, QTableWidgetItem(stu[0][1]))
             self.tableWidget.setItem(row_count, 3, QTableWidgetItem(stu[0][0]))
             row_count += 1
-
-
-
 
 
 if __name__ == '__main__':
